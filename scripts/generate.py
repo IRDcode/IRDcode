@@ -116,32 +116,43 @@ def hero_svg(profile, stars, total_contrib):
     role = escape(CFG["role"])
     focus = escape(CFG["focus"])
     loc = escape(CFG["location"].upper())
-    org = escape(CFG.get("org_line", ""))
     logo = logo_data_uri()
     logo_img = (f'<image href="{logo}" x="46" y="92" width="96" height="96" '
                 f'clip-path="url(#logoClip)" preserveAspectRatio="xMidYMid slice"/>'
-                f'<circle cx="94" cy="140" r="52" fill="none" stroke="url(#ember)" stroke-width="1.6" opacity="0.85"/>') if logo else ""
+                f'<circle cx="94" cy="140" r="52" fill="none" stroke="url(#ember)" stroke-width="1.6" opacity="0.85"/>'
+                f'<path d="M 94 82 A 58 58 0 0 1 145 111" fill="none" stroke="{EMBER_B}" stroke-width="2.4" stroke-linecap="round">'
+                f'<animateTransform attributeName="transform" type="rotate" from="0 94 140" to="360 94 140" dur="14s" repeatCount="indefinite"/></path>') if logo else ""
     pills, x = [], 46
-    for s in CFG["skills"]:
-        w = 30 + len(s) * 8.4
+    for sk in CFG["skills"]:
+        w = 30 + len(sk) * 8.4
         pills.append(
             f'<g><rect x="{x:.0f}" y="330" width="{w:.0f}" height="36" rx="18" fill="#101014" stroke="{LINE}"/>'
-            f'<text x="{x + w / 2:.0f}" y="353" font-size="14.5" fill="{SUB}" text-anchor="middle">{escape(s)}</text></g>')
+            f'<text x="{x + w / 2:.0f}" y="353" font-size="14.5" fill="{SUB}" text-anchor="middle">{escape(sk)}</text></g>')
         x += w + 12
     stats = [("TOTAL STARS", stars), ("PUBLIC REPOS", profile.get("public_repos", 0)),
              ("CONTRIBUTIONS · LAST YEAR", total_contrib)]
     stat_svg, sx = [], 46
-    for label, val in stats:
+    for i, (label, val) in enumerate(stats):
+        begin = i * 160
         stat_svg.append(
+            f'<g><animateTransform attributeName="transform" type="translate" from="0 12" to="0 0" begin="{begin}ms" dur="450ms" fill="freeze"/>'
             f'<text x="{sx}" y="272" font-size="31" font-weight="700" fill="url(#ember)">{val}</text>'
-            f'<text x="{sx}" y="296" font-size="10.5" letter-spacing="2.2" fill="{DIM}">{label}</text>')
-        sx += 218 if label != "CONTRIBUTIONS · LAST YEAR" else 0
+            f'<text x="{sx}" y="296" font-size="10.5" letter-spacing="2.2" fill="{DIM}">{label}</text></g>')
+        sx += 218
     eq = []
     for i, (h1, h2, dur) in enumerate([(10, 22, "1.1s"), (18, 30, "0.9s"), (8, 18, "1.3s"), (14, 26, "1.0s"), (6, 14, "1.2s")]):
         bx = 896 + i * 13
         eq.append(f'<rect x="{bx}" y="{352 - h1}" width="6" height="{h1}" rx="2" fill="{EMBER_A}" opacity="0.75">'
                   f'<animate attributeName="height" values="{h1};{h2};{h1}" dur="{dur}" repeatCount="indefinite"/>'
                   f'<animate attributeName="y" values="{352 - h1};{352 - h2};{352 - h1}" dur="{dur}" repeatCount="indefinite"/></rect>')
+    # Typewriter for the focus line (monospace => uniform char width).
+    focus_raw = CFG["focus"]
+    cw = 8.75
+    total_w = len(focus_raw) * cw
+    steps = len(focus_raw)
+    vals = ";".join(f"{(i * cw):.1f}" for i in range(steps + 1))
+    keys = ";".join(f"{i / steps:.4f}" for i in range(steps + 1))
+    caret_x = 168 + total_w + 5
     return f'''<svg xmlns="http://www.w3.org/2000/svg" width="{W}" height="400" viewBox="0 0 {W} 400" font-family="'Segoe UI','Helvetica Neue',Arial,sans-serif">
 <defs>
 <linearGradient id="ember" x1="0" y1="0" x2="1" y2="0">
@@ -155,6 +166,9 @@ def hero_svg(profile, stars, total_contrib):
 </linearGradient>
 <clipPath id="cardClip"><rect x="1" y="1" width="998" height="398" rx="23"/></clipPath>
 <clipPath id="logoClip"><circle cx="94" cy="140" r="48"/></clipPath>
+<clipPath id="typeClip"><rect x="166" y="182" width="0" height="30">
+<animate attributeName="width" calcMode="discrete" values="{vals}" keyTimes="{keys}" dur="2300ms" begin="500ms" fill="freeze"/>
+</rect></clipPath>
 </defs>
 <g clip-path="url(#cardClip)">
 <rect width="{W}" height="400" fill="#08080A"/>
@@ -175,11 +189,16 @@ def hero_svg(profile, stars, total_contrib):
 <animate attributeName="opacity" values="1;0.2;1" dur="1.7s" repeatCount="indefinite"/>
 </circle>
 <text x="70" y="51" font-size="12.5" letter-spacing="3.2" fill="{MUT}">IRDCODE · {loc}</text>
-<text x="954" y="51" font-size="12.5" letter-spacing="3.2" fill="{MUT}" text-anchor="end">{org}</text>
 {logo_img}
 <text x="168" y="138" font-size="46" font-weight="700" fill="{INK}">{name}</text>
 <text x="168" y="174" font-size="19.5" fill="{SUB}">{role}</text>
-<text x="168" y="204" font-size="14.5" fill="{MUT}">{focus}</text>
+<g clip-path="url(#typeClip)">
+<text x="168" y="204" font-size="14.5" fill="{MUT}" font-family="ui-monospace,'SF Mono',Consolas,monospace">{focus}</text>
+</g>
+<rect x="{caret_x:.0f}" y="189" width="8" height="17" fill="{EMBER_B}" opacity="0">
+<animate attributeName="opacity" values="0;0" begin="0ms" dur="2700ms" fill="freeze"/>
+<animate attributeName="opacity" values="1;0;1" begin="2750ms" dur="1050ms" repeatCount="indefinite"/>
+</rect>
 <line x1="46" y1="232" x2="954" y2="232" stroke="{LINE}" stroke-width="1"/>
 {''.join(stat_svg)}
 <line x1="46" y1="316" x2="954" y2="316" stroke="{LINE}" stroke-width="1"/>
