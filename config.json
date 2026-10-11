@@ -1,1 +1,21 @@
-{"featured_repos":["claude-code-session-handoff","hyperos-keyboard-gap-fix","hermes-agent-session-handoff","event-timer-distribution"],"focus":"Building developer tools · interfaces · cinematic video","location":"Tehran, Iran","name":"Kiarash Javanbakht","org_line":"HIRAD STUDIO","role":"Front-end Developer & Commercial Videographer","skills":["TypeScript","React","Next.js","Tailwind CSS","Python","Premiere Pro"],"username":"IRDcode"}
+{
+  "featured_repos": [
+    "claude-code-session-handoff",
+    "hyperos-keyboard-gap-fix",
+    "hermes-agent-session-handoff",
+    "event-timer-distribution"
+  ],
+  "focus": "Developer tools & interfaces · cinematic films & commercial teasers",
+  "location": "Tehran, Iran",
+  "name": "Kiarash Javanbakht",
+  "role": "Front-end Developer · Cinematographer & Editor",
+  "skills": [
+    "TypeScript",
+    "React",
+    "Next.js",
+    "Tailwind CSS",
+    "Premiere Pro",
+    "After Effects"
+  ],
+  "username": "IRDcode"
+}
