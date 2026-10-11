@@ -185,10 +185,7 @@ def hero_svg(profile, stars, total_contrib):
 </rect>
 </g>
 <rect x="1" y="1" width="998" height="398" rx="23" fill="none" stroke="url(#ember)" stroke-opacity="0.38" stroke-width="1.4"/>
-<circle cx="54" cy="46" r="5" fill="{EMBER_A}">
-<animate attributeName="opacity" values="1;0.2;1" dur="1.7s" repeatCount="indefinite"/>
-</circle>
-<text x="70" y="51" font-size="12.5" letter-spacing="3.2" fill="{MUT}">IRDCODE · {loc}</text>
+<text x="46" y="51" font-size="12.5" letter-spacing="3.2" fill="{MUT}">IRDCODE · {loc}</text>
 {logo_img}
 <text x="168" y="138" font-size="46" font-weight="700" fill="{INK}">{name}</text>
 <text x="168" y="174" font-size="19.5" fill="{SUB}">{role}</text>
