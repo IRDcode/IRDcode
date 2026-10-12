@@ -126,8 +126,8 @@ def hero_svg(profile, stars, total_contrib):
     stat_svg, sx = [], 46
     for label, val in stats:
         stat_svg.append(
-            f'<text x="{sx}" y="272" font-size="30" font-weight="700" fill="#F5F5F5">{val}</text>'
-            f'<text x="{sx}" y="296" font-size="10.5" letter-spacing="2.2" fill="#666666">{label}</text>')
+            f'<text class="statnum" x="{sx}" y="272" font-size="30" font-weight="700" fill="#F5F5F5">{val}</text>'
+            f'<text class="statlab" x="{sx}" y="296" font-size="10.5" letter-spacing="2.2" fill="#666666">{label}</text>')
         sx += 218
     skills_line = " / ".join(sk.upper() for sk in CFG["skills"])
     return f'''<svg xmlns="http://www.w3.org/2000/svg" width="{W}" height="400" viewBox="0 0 {W} 400" font-family="'Segoe UI','Helvetica Neue',Arial,sans-serif">
@@ -139,25 +139,46 @@ def hero_svg(profile, stars, total_contrib):
 </linearGradient>
 <clipPath id="cardClip"><rect x="1" y="1" width="998" height="398" rx="23"/></clipPath>
 <clipPath id="logoClip"><circle cx="94" cy="140" r="48"/></clipPath>
+<style>
+@media (max-width: 640px) {{
+  .coords {{ display: none; }}
+  .pname {{ font-size: 64px; }}
+  .prole {{ font-size: 27px; }}
+  .pfocus {{ font-size: 20px; }}
+  .statnum {{ font-size: 42px; }}
+  .statlab {{ font-size: 15px; }}
+  .skills {{ font-size: 16.5px; letter-spacing: 1.4px; }}
+}}
+</style>
+<pattern id="grain" width="3" height="3" patternUnits="userSpaceOnUse">
+<circle cx="0.7" cy="0.7" r="0.55" fill="#FFFFFF" opacity="0.05"/>
+<circle cx="2.2" cy="2.4" r="0.45" fill="#FFFFFF" opacity="0.035"/>
+</pattern>
 </defs>
 <g clip-path="url(#cardClip)">
 <rect width="{W}" height="400" fill="#050505"/>
+<rect x="46" y="1.5" width="908" height="1" fill="#FFFFFF" opacity="0.10"/>
 <g>
 <rect x="-320" y="-60" width="300" height="520" fill="url(#sweep)" transform="rotate(8)">
 </rect>
 <animateTransform attributeName="transform" type="translate" values="0 0;1420 0;1420 0" keyTimes="0;0.16;1" dur="17s" repeatCount="indefinite"/>
 </g>
-<rect x="1" y="1" width="998" height="398" rx="23" fill="none" stroke="#262626" stroke-width="1.2"/>
+<rect x="1" y="1" width="998" height="398" rx="23" fill="none" stroke="#1B1B1B" stroke-width="1.2"/>
+<path d="M 26 44 V 30 Q 26 26 30 26 H 44" fill="none" stroke="#5A5A5A" stroke-width="1.6"/>
+<path d="M 956 26 H 970 Q 974 26 974 30 V 44" fill="none" stroke="#5A5A5A" stroke-width="1.6"/>
+<path d="M 974 356 V 370 Q 974 374 970 374 H 956" fill="none" stroke="#5A5A5A" stroke-width="1.6"/>
+<path d="M 44 374 H 30 Q 26 374 26 370 V 356" fill="none" stroke="#5A5A5A" stroke-width="1.6"/>
 <text x="46" y="51" font-size="12.5" letter-spacing="3.4" fill="#8A8A8A">IRDCODE</text>
-<text x="954" y="51" font-size="12" letter-spacing="2.6" fill="#555555" text-anchor="end">TEHRAN · 35.69°N 51.39°E</text>
+<text class="coords" x="954" y="51" font-size="12" letter-spacing="2.6" fill="#555555" text-anchor="end">TEHRAN · 35.69°N 51.39°E</text>
 {logo_img}
-<text x="170" y="144" font-size="53" font-weight="700" fill="#F5F5F5" font-family="Georgia,'Times New Roman',serif">{name}</text>
-<text x="170" y="180" font-size="18.5" fill="#B4B4B4">{role}</text>
-<text x="170" y="208" font-size="13.5" fill="#7E7E7E">{focus}</text>
+<text class="pname" x="170" y="144" font-size="55" font-weight="700" letter-spacing="-0.5" fill="#F5F5F5" font-family="Georgia,'Times New Roman',serif">{name}</text>
+<text class="prole" x="170" y="180" font-size="18.5" letter-spacing="0.4" fill="#B4B4B4">{role}</text>
+<text class="pfocus" x="170" y="208" font-size="13.5" fill="#7E7E7E">{focus}</text>
 <line x1="46" y1="232" x2="954" y2="232" stroke="#1E1E1E" stroke-width="1"/>
 {''.join(stat_svg)}
 <line x1="46" y1="316" x2="954" y2="316" stroke="#1E1E1E" stroke-width="1"/>
-<text x="46" y="354" font-size="12.5" letter-spacing="2.2" fill="#9A9A9A">{escape(skills_line)}</text>
+<text class="skills" x="46" y="354" font-size="12.5" letter-spacing="2.2" fill="#9A9A9A">{escape(skills_line)}</text>
+<rect width="{W}" height="400" fill="url(#grain)"/>
 </g>
 </svg>'''
 
@@ -186,11 +207,11 @@ def works_svg(repos_by_name, days):
                     f'<text x="{cx + 38}" y="{cy + 99}" font-size="12.5" fill="{MUT}">{escape(lang)}</text>') if lang else ""
         cards.append(f'''<g>
 <rect x="{cx}" y="{cy}" width="452" height="120" rx="14" fill="{CARD}" stroke="{LINE}"/>
-<text x="{cx + 20}" y="{cy + 36}" font-size="17.5" font-weight="600" fill="{INK}">{escape(r['name'])}</text>
-<text x="{cx + 20}" y="{cy + 63}" font-size="12.8" fill="{MUT}">{escape(desc)}</text>
-{lang_svg}
-<polygon points="0,-5.2 1.55,-2.1 5,-1.6 2.5,0.85 3.1,4.2 0,2.2 -3.1,4.2 -2.5,0.85 -5,-1.6 -1.55,-2.1" transform="translate({cx + 396},{cy + 94})" fill="#E8E8E8"/>
-<text x="{cx + 428}" y="{cy + 99}" font-size="13.5" fill="#B4B4B4" text-anchor="end">{r.get('stargazers_count', 0)}</text>
+<text class="cardname" x="{cx + 20}" y="{cy + 36}" font-size="17.5" font-weight="600" fill="{INK}">{escape(r['name'])}</text>
+<text class="desc" x="{cx + 20}" y="{cy + 63}" font-size="12.8" fill="{MUT}">{escape(desc)}</text>
+<g class="meta">{lang_svg}</g>
+<g class="meta"><polygon points="0,-5.2 1.55,-2.1 5,-1.6 2.5,0.85 3.1,4.2 0,2.2 -3.1,4.2 -2.5,0.85 -5,-1.6 -1.55,-2.1" transform="translate({cx + 396},{cy + 94})" fill="#E8E8E8"/>
+<text x="{cx + 428}" y="{cy + 99}" font-size="13.5" fill="#B4B4B4" text-anchor="end">{r.get('stargazers_count', 0)}</text></g>
 </g>''')
     # heatmap: columns = weeks (Sun..Sat rows), from the earliest date in data
     total = sum(days.values())
@@ -219,7 +240,7 @@ def works_svg(repos_by_name, days):
             if row == 0 and d.month not in seen_months and d.day <= 7:
                 seen_months.add(d.month)
                 month_labels.append(
-                    f'<text x="{gx + c * pitch:.1f}" y="{gy - 10}" font-size="10" fill="{DIM}">{d.strftime("%b")}</text>')
+                    f'<text class="mon" x="{gx + c * pitch:.1f}" y="{gy - 10}" font-size="10" fill="{DIM}">{d.strftime("%b")}</text>')
     grid_h = 7 * pitch
     H = int(gy + grid_h + 58)
     legend = []
@@ -230,14 +251,23 @@ def works_svg(repos_by_name, days):
 <linearGradient id="ember2" x1="0" y1="0" x2="1" y2="0">
 <stop offset="0" stop-color="#3A3A3A"/><stop offset="1" stop-color="#E8E8E8"/>
 </linearGradient>
+<style>
+@media (max-width: 640px) {{
+  .desc {{ display: none; }}
+  .meta {{ transform: translateY(-25px); }}
+  .cardname {{ font-size: 21px; }}
+  .whead {{ font-size: 17px; }}
+  .mon {{ font-size: 13px; }}
+}}
+</style>
 </defs>
 <rect x="1" y="1" width="998" height="{H - 2}" rx="23" fill="#050505" stroke="#262626" stroke-width="1.2"/>
-<text x="46" y="44" font-size="14" letter-spacing="3.4" fill="{INK}">SELECTED WORK</text>
+<text class="whead" x="46" y="44" font-size="14" letter-spacing="3.4" fill="{INK}">SELECTED WORK</text>
 <rect x="46" y="56" width="0" height="2.4" fill="url(#ember2)">
 <animate attributeName="width" from="0" to="172" dur="1100ms" fill="freeze"/>
 </rect>
 {''.join(cards)}
-<text x="46" y="392" font-size="14" letter-spacing="3.4" fill="{INK}">LAST YEAR ON GITHUB</text>
+<text class="whead" x="46" y="392" font-size="14" letter-spacing="3.4" fill="{INK}">LAST YEAR ON GITHUB</text>
 <text x="954" y="392" font-size="13" fill="{MUT}" text-anchor="end">{total} contributions</text>
 {''.join(month_labels)}
 {''.join(cells_svg)}
