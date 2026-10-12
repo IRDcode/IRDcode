@@ -205,8 +205,13 @@ def works_svg(repos_by_name, days):
         dot = LANG_COLORS.get(lang, "#8B8B94")
         lang_svg = (f'<circle cx="{cx + 24}" cy="{cy + 94}" r="5" fill="{dot}"/>'
                     f'<text x="{cx + 38}" y="{cy + 99}" font-size="12.5" fill="{MUT}">{escape(lang)}</text>') if lang else ""
+        dly = 0.12 + i * 0.12
+        tot = dly + 0.5
+        kt = f"{dly / tot:.3f}"
         cards.append(f'''<g>
-<rect x="{cx}" y="{cy}" width="452" height="120" rx="14" fill="{CARD}" stroke="{LINE}"/>
+<animate attributeName="opacity" values="0;0;1" keyTimes="0;{kt};1" dur="{tot:.2f}s" fill="freeze"/>
+<animateTransform attributeName="transform" type="translate" values="0 12;0 12;0 0" keyTimes="0;{kt};1" dur="{tot:.2f}s" fill="freeze"/>
+<rect x="{cx}" y="{cy}" width="452" height="120" rx="14" fill="url(#cardGrad)" stroke="{LINE}"/>
 <text class="cardname" x="{cx + 20}" y="{cy + 36}" font-size="17.5" font-weight="600" fill="{INK}">{escape(r['name'])}</text>
 <text class="desc" x="{cx + 20}" y="{cy + 63}" font-size="12.8" fill="{MUT}">{escape(desc)}</text>
 <g class="meta">{lang_svg}</g>
@@ -232,7 +237,7 @@ def works_svg(repos_by_name, days):
             if d > date.today():
                 continue
             n = days.get(d, 0)
-            begin = int(c * 22 + row * 9)
+            begin = int(620 + c * 26 + row * 10)
             cells_svg.append(
                 f'<rect x="{gx + c * pitch:.1f}" y="{gy + row * pitch:.1f}" width="{cell}" height="{cell}" rx="2.6" '
                 f'fill="{level_color(n)}"><animate attributeName="fill" from="#141414" to="{level_color(n)}" '
@@ -251,6 +256,9 @@ def works_svg(repos_by_name, days):
 <linearGradient id="ember2" x1="0" y1="0" x2="1" y2="0">
 <stop offset="0" stop-color="#3A3A3A"/><stop offset="1" stop-color="#E8E8E8"/>
 </linearGradient>
+<linearGradient id="cardGrad" x1="0" y1="0" x2="0" y2="1">
+<stop offset="0" stop-color="#0C0C0C"/><stop offset="1" stop-color="#060606"/>
+</linearGradient>
 <style>
 @media (max-width: 640px) {{
   .desc {{ display: none; }}
@@ -262,19 +270,31 @@ def works_svg(repos_by_name, days):
 </style>
 </defs>
 <rect x="1" y="1" width="998" height="{H - 2}" rx="23" fill="#050505" stroke="#262626" stroke-width="1.2"/>
+<path d="M 42 24 H 25 V 41" fill="none" stroke="#3D3D3D" stroke-width="2"/>
+<path d="M 958 24 H 975 V 41" fill="none" stroke="#3D3D3D" stroke-width="2"/>
+<g>
+<animate attributeName="opacity" values="0;1" dur="0.45s" fill="freeze"/>
+<animateTransform attributeName="transform" type="translate" values="-8 0;0 0" dur="0.45s" fill="freeze"/>
 <text class="whead" x="46" y="44" font-size="14" letter-spacing="3.4" fill="{INK}">SELECTED WORK</text>
 <rect x="46" y="56" width="0" height="2.4" fill="url(#ember2)">
 <animate attributeName="width" from="0" to="172" dur="1100ms" fill="freeze"/>
 </rect>
+</g>
 {''.join(cards)}
+<g>
+<animate attributeName="opacity" values="0;0;1" keyTimes="0;0.45;1" dur="1.2s" fill="freeze"/>
 <text class="whead" x="46" y="392" font-size="14" letter-spacing="3.4" fill="{INK}">LAST YEAR ON GITHUB</text>
 <text x="954" y="392" font-size="13" fill="{MUT}" text-anchor="end">{total} contributions</text>
-{''.join(month_labels)}
+</g>
+<g><animate attributeName="opacity" values="0;0;1" keyTimes="0;0.3;1" dur="1.5s" fill="freeze"/>{''.join(month_labels)}</g>
 {''.join(cells_svg)}
+<g>
+<animate attributeName="opacity" values="0;0;1" keyTimes="0;0.78;1" dur="2.7s" fill="freeze"/>
 <text x="46" y="{H - 40}" font-size="10.5" fill="{DIM}">LESS</text>
 {''.join(legend)}
 <text x="{46 + 5 * 20 + 8}" y="{H - 40}" font-size="10.5" fill="{DIM}">MORE</text>
 <text x="954" y="{H - 24}" font-size="11" fill="#4B4B54" text-anchor="end">github.com/{USER} · art regenerates daily</text>
+</g>
 </svg>'''
 
 
