@@ -94,6 +94,9 @@ def level_color(n):
 
 
 def logo_data_uri():
+    b64p = ROOT / "assets-src" / "portrait.b64"
+    if b64p.exists():
+        return "data:image/jpeg;base64," + b64p.read_text().strip()
     p = ROOT / "assets" / "logo.jpg"
     raw = None
     if p.exists():
